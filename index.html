@@ -7,8 +7,8 @@
 	<dom-module id="native-window">
 		<link rel="import" type="css" href="style.css">
 		<template>
-			<native-title-bar debuggable></native-title-bar>
-			<content></content>
+			<header><native-title-bar platform="[[platform]]" design="[[design]]" debuggable="[[debuggable]]"></native-title-bar></header>
+			<main><content></content></main>
 		</template>
 	</dom-module>
 	<script src="register.js"></script>
