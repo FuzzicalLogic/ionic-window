@@ -1,5 +1,7 @@
 (function registerElement(ROOT_ELEMENT) {
 
+	var REMOTE = require('electron').remote;
+
 	var DEFAULT_HTML_RULES = {
 			'position': 'fixed',
 			'width': '100%',
@@ -25,13 +27,43 @@
 		detached: onElementDetached,
 
 		properties: {
+			window: {
+				type: Object,
+				value: function() {
+					return REMOTE.getCurrentWindow();
+				},
+				observer: '_onChangeWindow'
+			},
+			focused: {
+				type: Boolean,
+				value: REMOTE.getCurrentWindow().isFocused(),
+				reflectToAttribute: true,
+			},
 			stylesheet: {
 				type: String,
 				value: 'style.css',
 				observer: '_onChangeStyleSheet'
+			},
+			platform: {
+				type: String,
+				value: process.platform,
+				notify: true,
+				reflectToAttribute: true
+			},
+			design: {
+				type: String,
+				value: "",
+				notify: true,
+			},
+			debuggable: {
+				type: Boolean,
+				value: false,
+				notify: true,
+				reflectToAttribute: true
 			}
 		},
 
+		_onChangeWindow: onWindowChanged,
 		_onChangeStyleSheet: onStyleSheetChanged,
 	});
 
@@ -82,6 +114,24 @@
 		Object.getOwnPropertyNames(styles).forEach(function(v,k,a) {
 			rule.style.setProperty(v, styles[v])
 		});
+	}
+
+	function onWindowChanged(newValue, oldValue) {
+		if (typeof oldValue === "object" && typeof oldValue.on === "function") {
+
+		}
+		if (typeof newValue === "object" && typeof newValue.on === "function") {
+			newValue.on('blur', onWindowBlurred.bind(this));
+			newValue.on('focus', onWindowFocused.bind(this));
+		}
+	}
+
+	function onWindowFocused(event) {
+		this.focused = true;
+	}
+
+	function onWindowBlurred(event) {
+		this.focused = false;
 	}
 
 	function onElementDetached() {
