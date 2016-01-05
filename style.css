@@ -1,3 +1,17 @@
 :host {
 	flex: 1 1;
+	display: flex; flex-flow: column nowrap;
 }
+
+		:host > header > native-title-bar {
+			color: #666666;
+			background-color: white;
+		}
+		:host[focused] > header > native-title-bar {
+			color: #ffffff;
+			background-color: darkslategray;
+		}
+
+	:host > main {
+		flex: 1 1;
+	}
